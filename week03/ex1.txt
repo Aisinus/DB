@@ -1,0 +1,15 @@
+Mother-(c)-Person
+Daughter-(a)-Mother
+Student-(c)-Person
+Student-(b)-Student_id
+School-(a)-Student
+School-(a)-Class room
+Animal-(d)-Horse
+Horse-(c)-Breed
+Horse-(c)-Age
+Employee-(c)-SSN
+Furniture-(d)-Chair
+Chair-(b)-Weight
+Human-(d)-Woman
+Soldier (c)-Person
+Enemy combatant-(c)-Person

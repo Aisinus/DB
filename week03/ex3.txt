@@ -1,0 +1,21 @@
+Computer - computer id(key), manufacturer, year of manufacture
+Laptop - build configuration laptop id(key), battery capacity, screen diagonal
+Desktop - desktop id(key), size(atx, mix-atx etc...) 
+Component - component_id(key), company, year of manufacture, connectors
+Memory - memory id(key), memory size, type
+Sound Card - sound card id(key), frequency, analog output channels
+Video Card - video card id(key), memory frequency, video processor frequency, TDP, noise level
+Software - licence key(key), minimum requirements, expared year
+Operating system - licence key(key), validity period, version
+Accessory - accessory id(key), brand, year of manufacture, connection type, size
+Keyboard - keyboard id(key), keyboard type, languages
+Monitor - monitor id(key), matrix type, update frequency 
+Mouse - mouse id(key), optical sensor resolution, dpi
+
+The diagram shows the process of selling a computer along with the attached components. 
+
+Here is the must be bought with computer.
+
+The computer must be a desktop or laptop. The laptop has mandatory memory 
+options. The desktop, in turn, has a choice of components. Components include memory,
+sound card and video card. 
