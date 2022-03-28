@@ -1,0 +1,60 @@
+CREATE TABLE Salesperson (
+  salespersonID int PRIMARY KEY,
+  name char(50),
+);
+
+CREATE TABLE Customer (
+  customerID int PRIMARY KEY,
+  name char(50)
+);
+
+CREATE TABLE Car (
+  carSerialNumber int PRIMARY KEY,
+  salespersonID int,
+  model char(50),
+  boughtByCustomerID int,
+  serviceTicketID int,
+  CONSTRAINT FK_salespersonID FOREIGN KEY (salespersonID) REFERENCES Salesperson(salespersonID),
+  CONSTRAINT FK_boughtCustomerID FOREIGN KEY (boughtCustomerID) REFERENCES Customer(customerID),
+  CONSTRAINT FK_serviceTicketID FOREIGN KEY (serviceTicketID) REFERENCES ServiceTicket(ticketID)
+);
+
+CREATE TABLE Invoice (
+  invoiceID int PRIMARY KEY,
+  customerID int,
+  carSerialNumber int,
+  CONSTRAINT FK_customerID FOREIGN KEY (customerID) REFERENCES Customer(customerID),
+  CONSTRAINT FK_carSerialNumber FOREIGN KEY (carSerialNumber) REFERENCES Car(carSerialNumber)
+);
+
+
+
+CREATE TABLE ServiceTicket (
+  ticketID int PRIMARY KEY,
+  service  char(50),
+  customerID int,
+  carSerialNumber int,
+  CONSTRAINT FK_carSerialNumber FOREIGN KEY (carSerialNumber) REFERENCES Cars(carSerialNumber)
+);
+
+
+
+CREATE TABLE ServiceRecords (
+  serviceID int PRIMARY KEY,
+  description char(50),
+  date DATE,
+  ticketID int,
+  CONSTRAINT FK_ServiceTicket FOREIGN KEY (ticketID) REFERENCES ServiceTicket(ticketID)
+);
+
+CREATE TABLE Mechanics (
+  mechanicID int PRIMARY KEY,
+  name char(50)
+);
+
+CREATE TABLE MechanicsCars (
+  mechanicID int,
+  carSerialNumber int,
+  CONSTRAINT FK_carSerialNumber FOREIGN KEY (carSerialNumber) REFERENCES Car(carSerialNumber),
+  CONSTRAINT FK_mechanicID FOREIGN KEY (mechanicID) REFERENCES Mechanics(mechanicID)
+);
