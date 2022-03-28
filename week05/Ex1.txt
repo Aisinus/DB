@@ -1,0 +1,52 @@
+CREATE TABLE Customer
+(
+clientId int NOT NULL PRIMARY KEY,
+balance int,
+creditLimit int,
+discount int
+);
+
+CREATE TABLE Shipping_addresses(
+shipping_addressesID int NOT NULL PRIMARY KEY,
+clientId int NOT NULL,
+house# int NOT NULL,
+street char(50),
+district char(50),
+city char(50),
+CONSTRAINT FK_CustomerAddress FOREIGN KEY (clientId) REFERENCES Customer(clientId)
+);
+
+CREATE TABLE Order(
+orderId int NOT NULL PRIMARY KEY,
+date DATE,
+shipping_addressesID int NOT NULL,
+clientId int NOT NULL,
+CONSTRAINT FK_OrderAddress FOREIGN KEY (shipping_addressesID) REFERENCES Shipping_addresses(shipping_addressesID),
+CONSTRAINT FK_OrderCustomer FOREIGN KEY (clientId) REFERENCES Customer(clientId)
+);
+
+CREATE TABLE Item(
+itemId int NOT NULL PRIMARY KEY,
+description char(50),
+);
+
+CREATE TABLE Manufacture(
+manufactureId int NOT NULL PRIMARY KEY,
+phonenumber char(50)
+);
+
+
+CREATE TABLE produce(
+itemId int NOT NULL,
+manufactureId int NOT NULL,
+CONSTRAINT FK_ItemProduce FOREIGN KEY (itemId) REFERENCES Item(itemId),
+CONSTRAINT FK_ManufacturePriduce FOREIGN KEY (manufactureId) REFERENCES Manufacture(manufactureId)
+);
+
+CREATE TABLE Includes(
+itemId int NOT NULL PRIMARY KEY,
+quantity int,
+orderId int NOT NULL,
+CONSTRAINT FK_ItemIncludes FOREIGN KEY (itemId) REFERENCES Item(itemId),
+CONSTRAINT FK_OrderINclude FOREIGN KEY (orderId) REFERENCES Order(orderId)
+);
