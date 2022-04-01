@@ -1,0 +1,52 @@
+CREATE TABLE public.suppliers (
+	sid serial4 NOT NULL,
+	sname varchar(50) NOT NULL,
+	address varchar(50) NOT NULL,
+	CONSTRAINT suppliers_pkey PRIMARY KEY (sid)
+);
+CREATE TABLE public.parts (
+	pid serial4 NOT NULL,
+	pname varchar(50) NOT NULL,
+	color varchar(50) NOT NULL,
+	CONSTRAINT parts_pkey PRIMARY KEY (pid)
+);
+CREATE TABLE public.catalogs (
+	sid int4 NOT NULL,
+	pid int4 NOT NULL,
+	costs float4 NULL,
+	CONSTRAINT catalogs_pkey PRIMARY KEY (sid, pid),
+	CONSTRAINT catalogs_pid_fkey FOREIGN KEY (pid) REFERENCES public.parts(pid),
+	CONSTRAINT catalogs_sid_fkey FOREIGN KEY (sid) REFERENCES public.suppliers(sid)
+);
+
+INSERT INTO public.suppliers (sid,sname,address) VALUES
+   (1,'Yosemite Sham ','Devil’s canyon, AZ'),
+   (2,'Wiley E. Coyote','RR Asylum, NV'),
+   (3,'Elmer Fudd','Carrot Patch, MN');
+
+INSERT INTO public.parts (pid,pname,color) VALUES
+   (1,'Red1','Red'),
+   (2,'Red2','Red'),
+   (3,'Green1','Green'),
+   (4,'Blue1','Blue'),
+   (5,'Red3','Red');
+
+INSERT INTO public.catalogs (sid,pid,"cost") VALUES
+   (1,1,10.0),
+   (1,2,20.0),
+   (1,3,30.0),
+   (1,4,40.0),
+   (1,5,50.0),
+   (2,1,9.0),
+   (2,3,34.0),
+   (2,5,48.0);
+
+select distinct sname from suppliers inner join (select sid from catalogs inner join (select pid from parts where parts.color = 'Red')squery on squery.pid = catalogs.pid)subQ on subQ.sid = suppliers.sid;
+select distinct sid from catalogs inner join (select pid from parts where parts.color = 'Red' or parts.color = 'Green')squery on squery.pid = catalogs.pid;
+select distinct suppliers.sid from suppliers inner join (select sid from catalogs inner join (select pid from parts where parts.color = 'Red')pquery on pquery.pid = catalogs.pid)squery on squery.sid = suppliers.sid or suppliers.address = '221 Packer Street';
+select distinct sid from catalogs as sx where not exists ((select pid from parts where parts.color = 'Red' or parts.color = 'Green') except (select pid from catalogs as sp where sx.sid = sp.sid));
+select distinct sid from catalogs as sx where (not exists ((select pid from parts where parts.color = 'Red') except (select pid from catalogs as sp where sx.sid = sp.sid))) or (not exists ((select pid from parts where parts.color = 'Green') except (select pid from catalogs as sp where sx.sid = sp.sid)));
+select c1.sid as sid1, c2.sid as sid2, c1.pid from (catalogs as c1 cross join catalogs as c2) where c1.cost > c2.cost and c1.pid = c2.pid;
+select distinct c1.pid from (catalogs as c1 cross join catalogs as c2) where c1.sid != c2.sid and c1.pid = c2.pid;
+select sid, color, avg(cost) as avg_cost from catalogs inner join (select pid, color from parts where color = 'Red' or color = 'Green')pquery on pquery.pid = catalogs.pid group by sid, pquery.color;
+select sid from (select distinct sid, max(cost) as max_cost from catalogs group by sid) as s where max_cost >= 50; 
