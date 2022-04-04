@@ -1,0 +1,60 @@
+create table Customers(
+customerId int not null primary key,
+customerName text not null,
+city text not null
+);
+
+create table Items(
+itemId int not null primary key,
+itemName text not null,
+price float not null
+);
+
+create table Orders(
+orderId int not null primary key,
+customerId int not null,
+orderDate date not null,
+foreign key (customerId) references Customers(customerId)
+);
+
+create table OrderItems(
+orderId int not null,
+itemId int not null,
+quantity int not null,
+primary key (orderId, itemId),
+foreign key (orderId) references Orders(orderId),
+foreign key (itemId) references Items(itemId)
+);
+
+insert into Customers (customerId, customerName, city) values 
+  (101, 'Martin', 'Prague'),
+  (107, 'Herman', 'Madrid'),
+  (110, 'Pedro', 'Moscow')
+  ;
+  
+insert into Items (itemId, itemName, price) values 
+  (3786, 'Net', 35.0),
+  (4011, 'Racket', 65.0),
+  (9132, 'Pack-3', 4.75),
+  (5794, 'Pack -6', 5.0),
+  (3141, 'Cover', 10.0)
+  ;
+  
+insert into Orders (orderId, customerId, orderDate) values
+  (2301, 101, '2011-02-23'),
+  (2302, 107, '2011-02-25'),
+  (2303, 110, '2011-02-27')
+  ;
+  
+insert into OrderItems (orderId, itemId, quantity) values 
+  (2301, 3786, 3),
+  (2301, 4011, 6),
+  (2301, 9132, 8),
+  (2302, 5794, 4),
+  (2303, 4011, 2),
+  (2303, 3141, 2)
+  ;
+  
+select sum(quantity), sum(quantity * price) from OrderItems inner join (select * from Items) squery on squery.itemId = OrderItems.itemId where orderId = 2301;
+
+select customerName, totalSpendings from Customers inner join (select customerId, sum(quantity * price) as totalSpendings from Orders inner join (select * from OrderItems inner join (select * from Items) iquery on iquery.itemId = OrderItems.itemId) oiquery on oiquery.orderId = Orders.orderId group by customerId)oquery on oquery.customerId = Customers.customerId where totalSpendings = (select max(totalSpendings) from (select customerId, sum(quantity * price) as totalSpendings from Orders inner join (select * from OrderItems inner join (select * from Items) iquery on iquery.itemId = OrderItems.itemId) oiquery on oiquery.orderId = Orders.orderId group by customerId) as yes);

@@ -1,0 +1,113 @@
+create table Schools(
+schoolId int not null primary key,
+schoolName text not null
+);
+
+create table Teacher(
+teacherId int not null primary key,
+teacherName text not null,
+schoolId int not null,
+foreign key (schoolId) references Schools(schoolId)
+);
+
+create table Book(
+bookId int not null primary key,
+bookName text not null,
+publisher text not null
+);
+
+create table Grade(
+gradeId int not null primary key,
+gradeName text not null
+);
+
+create table Course(
+courseId int not null primary key,
+courseName text not null,
+gradeId int not null,
+foreign key (gradeId) references Grade(gradeId)
+);
+
+create table Room(
+roomId int not null primary key,
+roomName text not null
+);
+
+create table Classes(
+classId int not null primary key,
+teacherId int not null,
+courseId int not null,
+roomId int not null,
+foreign key (teacherId) references Teacher(teacherId),
+foreign key (courseId) references Course(courseId),
+foreign key (roomId) references Room(roomId)
+);
+
+create table BookLoan(
+classtaughtin int not null,
+bookId int not null,
+loanDate date not null,
+foreign key (bookId) references Book(bookId),
+foreign key (classtaughtin) references Classes(classId)
+);
+
+insert into Schools (schoolId, schoolName) values 
+  (0, 'Horizon Education Institute'),
+  (1, 'Bright Institution')
+  ;
+
+insert into Teacher (teacherId, teacherName, schoolId) values 
+  (0, 'Chad Russell', 0),
+  (1, 'E.F.Codd', 0),
+  (2, 'Jones Smith', 0),
+  (3, 'Adam Baker', 1)
+  ;
+
+insert into Book (bookId, bookName, publisher) values 
+  (0, 'Learning and teaching in early childhood', 'BOA Editions'),
+  (1, 'Preschool,N56', 'Taylor & Francis Publishing'),
+  (2, 'Early Childhood Education N9', 'Prentice Hall'),
+  (3, 'Know how to educate: guide for Parents and', 'McGraw Hill')
+  ;
+insert into Grade (gradeId, gradeName) values 
+  (0, '1st grade'),
+  (1, '2nd grade')
+  ;
+insert into Course (courseId, courseName, gradeId) values 
+  (0, 'Logical thinking', '0'),
+  (1, 'Writing', '0'),
+  (2, 'Numerical thinking', '0'),
+  (3, 'Spatial, Temporal and Causal thinking', '0'),
+  (4, 'English', '1'),
+  (5, 'Writing', '1')
+  ;
+insert into room (roomId, roomname) values
+   (0,'1.A01'),
+   (1,'1.B01'),
+   (2,'2.B01')
+;
+insert into classes (classId,teacherId, courseId, roomId) values 
+   (0,0,0,0),
+   (1,0,1,0),
+   (2,0,2,0),
+   (3,1,3,1),
+   (4,1,2,1),
+   (5,2,5,0),
+   (6,2,4,0),
+   (7,3,0,2),
+   (8,3,2,2)
+;
+insert into bookloan (classtaughtin, bookId, loanDate) values 
+   (0,0,'2010-09-09'),
+   (1,1,'2010-05-05'),
+   (2,0,'2010-05-05'),
+   (3,2,'2010-05-06'),
+   (4,0,'2010-05-06'),
+   (5,0,'2010-09-09'),
+   (6,3,'2010-05-05'),
+   (7,3,'2010-12-18'),
+   (8,0,'2010-05-06')
+;
+
+select schools.schoolName, count(schools.schoolid) from schools  inner join teacher inner join classes inner join bookloan on classes.classId = bookloan.classtaughtin on teacher.teacherid = classes.teacherid on teacher.schoolid=schools.schoolid group by schools.schoolid ;
+select distinct on (schools.schoolid) * from schools inner join (select teacher.teacherName, teacher.schoolId, max(current_date - bookloan.loandate) duration, bookName  from teacher inner join classes inner join bookloan inner join book on book.bookid = bookloan.bookid  on classes.classId = bookloan.classtaughtin on teacher.teacherid = classes.teacherid group by teacher.teacherId, book.bookid order by max(current_date - bookloan.loandate) desc) s on s.schoolId = schools.schoolid ;
