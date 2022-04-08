@@ -1,0 +1,3 @@
+"QUERY PLAN"
+"Seq Scan on customer  (cost=0.00..4281.00 rows=99999 width=211)"
+"  Filter: (id > 0)"

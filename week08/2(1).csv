@@ -1,0 +1,3 @@
+"QUERY PLAN"
+"Seq Scan on customer  (cost=0.00..4531.00 rows=33333 width=4)"
+"  Filter: (length(review) > 5)"
