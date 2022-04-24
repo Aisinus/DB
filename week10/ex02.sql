@@ -1,3 +1,4 @@
+/* Read uncommited */
 /* First termianl */
 postgres=# begin transaction isolation level read uncommitted;
 BEGIN
@@ -134,11 +135,124 @@ postgres=#
 
 ----------------------------------------------------------------------------------------------
 /*
-1) Terminals show diffrent information because no one transaction are commited 
+1) Terminals show diffrent information because no single transaction are commited 
 2) Second terminal are locked after update because first terminal didnt finished the transaction
 */
 
+/* Repetable read */
+
+/* First terminal */
+postgres=# begin transaction isolation level repeatable read;
+BEGIN
+postgres=*# select * from account;
+ username |     fullname     | balance | group_id 
+----------+------------------+---------+----------
+ jones    | Alice Jones      |      82 |        1
+ bitdiddl | Ben Bitdiddle    |      65 |        1
+ mike     | Michael Dole     |      73 |        2
+ alyssa   | Alyssa P. Hacker |      79 |        3
+ bbrown   | Bob Brown        |     100 |        3
+(5 строк)
+
+postgres=*# select * from account;
+ username |     fullname     | balance | group_id 
+----------+------------------+---------+----------
+ jones    | Alice Jones      |      82 |        1
+ bitdiddl | Ben Bitdiddle    |      65 |        1
+ mike     | Michael Dole     |      73 |        2
+ alyssa   | Alyssa P. Hacker |      79 |        3
+ bbrown   | Bob Brown        |     100 |        3
+(5 строк)
+
+postgres=*# select * from account;
+ username |     fullname     | balance | group_id 
+----------+------------------+---------+----------
+ jones    | Alice Jones      |      82 |        1
+ bitdiddl | Ben Bitdiddle    |      65 |        1
+ mike     | Michael Dole     |      73 |        2
+ alyssa   | Alyssa P. Hacker |      79 |        3
+ bbrown   | Bob Brown        |     100 |        3
+(5 строк)
+
+postgres=*# update account set balance = balance+10 where fullname='Alice Jones';
+ОШИБКА:  не удалось сериализовать доступ из-за параллельного изменения
+postgres=!# commit
+postgres-!# commit;
+ОШИБКА:  ошибка синтаксиса (примерное положение: "commit")
+СТРОКА 2: commit;
+          ^
+postgres=!# commit;
+ROLLBACK
+postgres=# select * from account;
+ username |     fullname     | balance | group_id 
+----------+------------------+---------+----------
+ bitdiddl | Ben Bitdiddle    |      65 |        1
+ mike     | Michael Dole     |      73 |        2
+ alyssa   | Alyssa P. Hacker |      79 |        3
+ bbrown   | Bob Brown        |     100 |        3
+ jones    | ajones           |      82 |        1
+(5 строк)
+
+postgres=# 
+
+----------------------------------------------------------------------------------------------
+
+/* Second terminal */
+
+postgres=# begin transaction isolation level repeatable read;
+BEGIN
+postgres=*# update account set fullname = 'ajones' where fullname = 'Alice Jones';
+UPDATE 1
+postgres=*# select * from account;
+ username |     fullname     | balance | group_id 
+----------+------------------+---------+----------
+ bitdiddl | Ben Bitdiddle    |      65 |        1
+ mike     | Michael Dole     |      73 |        2
+ alyssa   | Alyssa P. Hacker |      79 |        3
+ bbrown   | Bob Brown        |     100 |        3
+ jones    | ajones           |      82 |        1
+(5 строк)
+
+postgres=*# commit;
+COMMIT
+postgres=# begin transaction isolation level repeatable read;
+BEGIN
+postgres=*# select * from account;
+ username |     fullname     | balance | group_id 
+----------+------------------+---------+----------
+ bitdiddl | Ben Bitdiddle    |      65 |        1
+ mike     | Michael Dole     |      73 |        2
+ alyssa   | Alyssa P. Hacker |      79 |        3
+ bbrown   | Bob Brown        |     100 |        3
+ jones    | ajones           |      82 |        1
+(5 строк)
+
+postgres=*# update account set balance = balance+20 where fullname = 'ajones';
+UPDATE 1
+postgres=*# rollback;
+ROLLBACK
+postgres=# select * from account;
+ username |     fullname     | balance | group_id 
+----------+------------------+---------+----------
+ bitdiddl | Ben Bitdiddle    |      65 |        1
+ mike     | Michael Dole     |      73 |        2
+ alyssa   | Alyssa P. Hacker |      79 |        3
+ bbrown   | Bob Brown        |     100 |        3
+ jones    | ajones           |      82 |        1
+(5 строк)
+
+postgres=# 
+
+
 /* Read commited */
+
+/*
+1)Terminals show diffrent information because repetable read isolation dont change hence that first terminal dont commit transaction
+2)Alice Jones dont get any money to balance 
+*/
+
+----------------------------------------------------------------------------------------------
+
 
 /* First terminal */
 postgres=# begin transaction isolation level read committed;

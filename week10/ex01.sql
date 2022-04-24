@@ -23,8 +23,9 @@ create table if not exists ledger (
 
 
 alter table accounts add column bank_name varchar(25) default 'SberBank';
-UPDATE accounts SET bank_name = 'Fee' WHERE acc_id = 4;
-INSERT INTO accounts(acc_name, credit, currency) VALUES ('fees', 0, 'rub')
+update accounts set bank_name = 'Tinkoff' where acc_id = 2;
+update accounts set bank_name = 'Fee' where acc_id = 4;
+insert into accounts(acc_name, credit, currency) values ('fees', 0, 'rub')
 
 
 create or replace procedure credit_transfer(id1 int, id2 int, credit_summ int)
