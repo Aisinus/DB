@@ -1,0 +1,86 @@
+Create((p:Fighter {name:"Khabib Nurmagomedov", weight: 155}))
+Create((p:Fighter {name:"Rafael Dos Anjos", weight: 155}))
+Create((p:Fighter {name:"Neil Magny", weight: 170}))
+Create((p:Fighter {name:"Jon Jones", weight: 205}))
+Create((p:Fighter {name:"Daniel Cormier", weight: 205}))
+Create((p:Fighter {name:"Michael Bisping", weight: 185}))
+Create((p:Fighter {name:"Matt Hamil", weight: 185}))
+Create((p:Fighter {name:"Brandon Vera", weight: 205}))
+Create((p:Fighter {name:"Frank Mir", weight: 230}))
+Create((p:Fighter {name:"Brock Lesnar", weight: 230}))
+Create((p:Fighter {name:"Kelvin Gastelum", weight: 185}))
+
+match (p:Fighter) 
+where p.name="Khabib Nurmagomedov"
+match (pp:Fighter)
+where pp.name="Rafael Dos Anjos"
+create (p)-[:beats]->(pp)
+
+match (p:Fighter) 
+where p.name="Rafael Dos Anjos"
+match (pp:Fighter)
+where pp.name="Neil Magny"
+create (p)-[:beats]->(pp)
+
+
+match (p:Fighter) 
+where p.name="Jon Jones"
+match (pp:Fighter)
+where pp.name="Daniel Cormier"
+create (p)-[:beats]->(pp)
+
+match (p:Fighter) 
+where p.name="Michael Bisping"
+match (pp:Fighter)
+where pp.name="Matt Hamil"
+create (p)-[:beats]->(pp)
+
+match (p:Fighter) 
+where p.name="Jon Jones"
+match (pp:Fighter)
+where pp.name="Brandon Vera"
+create (p)-[:beats]->(pp)
+
+match (p:Fighter) 
+where p.name="Brandon Vera"
+match (pp:Fighter)
+where pp.name="Frank Mir"
+create (p)-[:beats]->(pp)
+
+match (p:Fighter) 
+where p.name="Frank Mir"
+match (pp:Fighter)
+where pp.name="Brock Lesnar"
+create (p)-[:beats]->(pp)
+
+match (p:Fighter) 
+where p.name="Neil Magny"
+match (pp:Fighter)
+where pp.name="Kelvin Gastelum"
+create (p)-[:beats]->(pp)
+
+match (p:Fighter) 
+where p.name="Kelvin Gastelum"
+match (pp:Fighter)
+where pp.name="Michael Bisping"
+create (p)-[:beats]->(pp)
+
+
+match (p:Fighter) 
+where p.name="Michael Bisping"
+match (pp:Fighter)
+where pp.name="Matt Hamil"
+create (p)-[:beats]->(pp)
+
+
+match (p:Fighter) 
+where p.name="Michael Bisping"
+match (pp:Fighter)
+where pp.name="Kelvin Gastelum"
+create (p)-[:beats]->(pp)
+
+match (p:Fighter) 
+where p.name="Matt Hamil"
+match (pp:Fighter)
+where pp.name="Jon Jones"
+create (p)-[:beats]->(pp)

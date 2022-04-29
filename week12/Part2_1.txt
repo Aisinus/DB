@@ -1,0 +1,17 @@
+First query
+
+match (p:Fighter)-[:beats]->(pp:Fighter)
+where p.weight=155
+return p
+
+Second query
+
+match (p:Fighter)-[:beats]->(pp:Fighter)
+where p.weight=170
+return p
+
+Third query
+
+match (p:Fighter)-[:beats]->(pp:Fighter)
+where p.weight=185
+return p

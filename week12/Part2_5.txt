@@ -1,0 +1,3 @@
+match (p:Fighter)
+set p.record = size((p)-->())+"/"+size(()-->(p))
+return p.name as name, size((p)-->()) as out, size((p)-->()) as income

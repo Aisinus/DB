@@ -1,0 +1,13 @@
+No loss
+
+match (p:Fighter)-[:beats]->(pp:Fighter)
+with collect(distinct pp) as loss
+match (noLose:Fighter) where not noLose in loss
+return noLose
+
+No win
+
+match (p:Fighter)-[:beats]->(pp:Fighter)
+with collect(distinct p) as win
+match (noWin:Fighter) where not noWin in win
+return noWin
